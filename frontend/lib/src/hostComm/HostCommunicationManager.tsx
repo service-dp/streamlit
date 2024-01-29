@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022)
+ * Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022-2024)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,14 @@ export interface HostCommunicationProps {
   readonly rerunScript: () => void
   readonly clearCache: () => void
   readonly sendAppHeartbeat: () => void
+  readonly setInputsDisabled: (inputsDisabled: boolean) => void
   readonly themeChanged: (themeInfo: ICustomThemeConfig) => void
   readonly pageChanged: (pageScriptHash: string) => void
   readonly isOwnerChanged: (isOwner: boolean) => void
+  readonly jwtHeaderChanged: (jwtPayload: {
+    jwtHeaderName: string
+    jwtHeaderValue: string
+  }) => void
   readonly hostMenuItemsChanged: (menuItems: IMenuItem[]) => void
   readonly hostToolbarItemsChanged: (toolbarItems: IToolbarItem[]) => void
   readonly hostHideSidebarNavChanged: (hideSidebarNav: boolean) => void
@@ -185,6 +190,10 @@ export default class HostCommunicationManager {
       this.props.sendAppHeartbeat()
     }
 
+    if (message.type === "SET_INPUTS_DISABLED") {
+      this.props.setInputsDisabled(message.disabled)
+    }
+
     if (message.type === "SET_AUTH_TOKEN") {
       // NOTE: The edge case (that should technically never happen) where
       // useExternalAuthToken is false but we still receive this message
@@ -192,6 +201,9 @@ export default class HostCommunicationManager {
       // is a no-op, and we already resolved the promise to undefined
       // above.
       this.deferredAuthToken.resolve(message.authToken)
+      if (message.jwtHeaderName !== undefined) {
+        this.props.jwtHeaderChanged(message)
+      }
     }
 
     if (message.type === "SET_IS_OWNER") {

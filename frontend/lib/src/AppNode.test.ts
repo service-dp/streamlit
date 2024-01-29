@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022)
+ * Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022-2024)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@ const BLOCK = block([
   ]),
 ])
 
-// Initialize new AppRoot with a main block node and two child block nodes - sidebar and events.
+// Initialize new AppRoot with a main block node and three child block nodes - sidebar, events and bottom.
 const ROOT = new AppRoot(
-  new BlockNode([BLOCK, new BlockNode(), new BlockNode()])
+  new BlockNode([BLOCK, new BlockNode(), new BlockNode(), new BlockNode()])
 )
 
 describe("AppNode.getIn", () => {
